@@ -4,6 +4,7 @@ my_if/const.go
 exproxy/const.go
 const.go
 
+eh-web-viewer
 eh-web-viewer-back
 *.bin
 *.exe

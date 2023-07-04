@@ -17,7 +17,7 @@ var nextBatch = make([]net.IP, 0)
 var prefix = PREFIX
 
 func addAddr(IPv6Addr string) error {
-	cmd := exec.Command("ifconfig", "sit1", "inet6", "add", IPv6Addr+"/64") // command and arguments
+	cmd := exec.Command("/sbin/ifconfig", "sit1", "inet6", "add", IPv6Addr+"/64") // command and arguments
 	output, err := cmd.Output()
 	// log.Println("add addr " + IPv6Addr + " :" + string(output))
 	_ = output
@@ -25,7 +25,7 @@ func addAddr(IPv6Addr string) error {
 }
 
 func delAddr(IPv6Addr string) error {
-	cmd := exec.Command("ifconfig", "sit1", "inet6", "del", IPv6Addr+"/64") // command and arguments
+	cmd := exec.Command("/sbin/ifconfig", "sit1", "inet6", "del", IPv6Addr+"/64") // command and arguments
 	output, err := cmd.Output()
 	// log.Println("del addr " + IPv6Addr + " :" + string(output))
 	_ = output
