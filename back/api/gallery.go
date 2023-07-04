@@ -104,6 +104,10 @@ func queryGalleryPreview(query string) (galleryPreview *GalleryPreview, err erro
 		galleryPreview.Error = err.Error()
 		return
 	}
+	if resp.StatusCode != 200 {
+		galleryPreview.Error = resp.Status
+		return
+	}
 
 	doc, err := htmlquery.Parse(resp.Body)
 	if err != nil {
@@ -111,34 +115,43 @@ func queryGalleryPreview(query string) (galleryPreview *GalleryPreview, err erro
 		return
 	}
 
-	gd1 := htmlquery.FindOne(doc, "//div[@id='gd1']/div")
-	galleryPreview.Preview = rePreview.FindString(htmlquery.SelectAttr(gd1, "style"))
-
-	gn := htmlquery.FindOne(doc, "//h1[@id='gn']")
-	galleryPreview.Title = htmlquery.InnerText(gn)
-
-	gj := htmlquery.FindOne(doc, "//h1[@id='gj']")
-	galleryPreview.OriginTitle = htmlquery.InnerText(gj)
-
+	galleryPreview.Preview, err = findOneAndSelectAttr(doc, "//div[@id='gd1']/div", "style")
+	galleryPreview.Preview = rePreview.FindString(galleryPreview.Preview)
+	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
+	}
+	galleryPreview.Title, err = findOneAndSelectAttr(doc, "//h1[@id='gn']", InnerText)
+	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
+	}
+	galleryPreview.OriginTitle, err = findOneAndSelectAttr(doc, "//h1[@id='gj']", InnerText)
+	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
+	}
 	// tags
 	galleryPreview.Tags, err = parseTags(doc)
 	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
 		return
 	}
 
-	gdc := htmlquery.FindOne(doc, "//div[@id='gdc']")
-	galleryPreview.Category = htmlquery.InnerText(gdc)
-
-	pages := htmlquery.FindOne(doc, "//div[@id='gdd']/table/tbody/tr[6]/td[2]")
-	galleryPreview.Pages = htmlquery.InnerText(pages)
-
+	galleryPreview.Category, err = findOneAndSelectAttr(doc, "//div[@id='gdc']", InnerText)
+	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
+	}
+	galleryPreview.Pages, err = findOneAndSelectAttr(doc, "//div[@id='gdd']/table/tbody/tr[6]/td[2]", InnerText)
+	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
+	}
 	galleryPreview.Images, err = queryAllStringList(doc, "//div[@class='gdtl']//img", "src")
 	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
 		return
 	}
 
 	galleryPreview.Url, err = queryAllStringList(doc, "//div[@class='gdtl']//a", "href")
 	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
 		return
 	}
 

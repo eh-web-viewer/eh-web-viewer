@@ -122,7 +122,7 @@ func queryIndex(query string) (index *Index, err error) {
 	}
 	index.Galleries = make([]*GallerySummary, len(list))
 	for k, v := range list {
-		index.Galleries[k] = parseIndexNodeToSummary(v)
+		index.Galleries[k] = parseIndexNodeToSummary(v) // not null
 	}
 
 	return

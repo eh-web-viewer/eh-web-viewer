@@ -7,6 +7,7 @@ import (
 	"github.com/eh-web-viewer/eh-web-viewer/mycurl"
 )
 
+// go test -timeout 300m -run ^TestMain$ github.com/eh-web-viewer/eh-web-viewer
 func TestMain(t *testing.T) {
 	mycurl.SetClient(mycurl.PROXY) // TODO: curl with different ip
 

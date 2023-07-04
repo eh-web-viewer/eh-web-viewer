@@ -28,6 +28,10 @@ func queryImage(query string) (image *Image, err error) {
 		image.Error = err.Error()
 		return
 	}
+	if resp.StatusCode != 200 {
+		image.Error = resp.Status
+		return
+	}
 
 	doc, err := htmlquery.Parse(resp.Body)
 	if err != nil {
@@ -35,23 +39,31 @@ func queryImage(query string) (image *Image, err error) {
 		return
 	}
 
-	prevPage := htmlquery.FindOne(doc, "//a[@id='prev']")
-	image.PrevPage = htmlquery.SelectAttr(prevPage, "href")
-
-	nextPage := htmlquery.FindOne(doc, "//a[@id='next']")
-	image.NextPage = htmlquery.SelectAttr(nextPage, "href")
-
-	gallery := htmlquery.FindOne(doc, "//div[@class='sb']/a")
-	image.GalleryPage = htmlquery.SelectAttr(gallery, "href")
-
-	img := htmlquery.FindOne(doc, "//img[@id='img']")
-	image.Image = htmlquery.SelectAttr(img, "src")
-
-	loadfail := htmlquery.FindOne(doc, "//a[@id='loadfail']")
-	image.AltImage = htmlquery.SelectAttr(loadfail, "onclick")
-
-	origin := htmlquery.FindOne(doc, "//div[@id='i7']/a")
-	image.OriginImage = htmlquery.SelectAttr(origin, "href")
+	image.PrevPage, err = findOneAndSelectAttr(doc, "//a[@id='prev']", "href")
+	if err != nil {
+		image.Error += err.Error() + "\n"
+	}
+	image.NextPage, err = findOneAndSelectAttr(doc, "//a[@id='next']", "href")
+	if err != nil {
+		image.Error += err.Error() + "\n"
+	}
+	image.GalleryPage, err = findOneAndSelectAttr(doc, "//div[@class='sb']/a", "href")
+	if err != nil {
+		image.Error += err.Error() + "\n"
+	}
+	image.Image, err = findOneAndSelectAttr(doc, "//img[@id='img']", "src")
+	if err != nil {
+		image.Error += err.Error() + "\n"
+	}
+	image.AltImage, err = findOneAndSelectAttr(doc, "//a[@id='loadfail']", "onclick")
+	if err != nil {
+		image.Error += err.Error() + "\n"
+	}
+	image.OriginImage, err = findOneAndSelectAttr(doc, "//div[@id='i7']/a", "href")
+	if err != nil {
+		image.Error += err.Error() + "\n"
+		err = nil
+	}
 
 	return
 }
