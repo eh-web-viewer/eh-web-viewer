@@ -1,5 +1,6 @@
 import {
-   ref, reactive,
+  //  ref,
+   reactive,
    Ref,
 } from 'vue'
 // import { RouteLocationNormalizedLoaded, Router } from 'vue-router'
@@ -44,7 +45,6 @@ class Store<T> {
 // interface IStore<T> {
 //   value: T
 // }
-
 const recoder: Record<string, Store<any>> = {
   test : new Store<number[]>([1]),
 }
@@ -125,7 +125,7 @@ const store = {
   },
   imageData : {
     query : "invalid",
-    preloadLength : 5,
+    preloadLength : 15,
     // imageLists : reactive<Image[]>([]), // Proxy(Array)
     imageRecords : new Map<number, IImage>(), // key: query, value: the Image of that query
     fetchedRecords : new Set<string>(),

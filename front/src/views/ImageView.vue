@@ -1,16 +1,27 @@
 <template>
-  <button @click="()=>{console.log('image',image);console.log('imageList,route.fullPath',imageList, route.fullPath)}"></button>
+  <!-- <button @click="()=>{console.log('image',image);console.log('imageList,route.fullPath',imageList, route.fullPath)}"></button> -->
   <router-link :to="{path: nextPageQuery}">    
-    <div v-for="image in imageList" :key="image.query" v-show="image.query === route.fullPath">
+    <div v-for="image in imageList" :key="image.query" v-show="image.query === currentQuery">
       <!-- {{ image.query }} -->
       <ImageBox :image="image" v-if="(typeof image !== 'undefined')" ></ImageBox>
     </div>
   </router-link>
+
+  <br>
   
-  <!-- <router-link :to="{path: firstPageQuery}">first page</router-link> -->
-  <router-link :to="{path: prevPageQuery}"><buttom> &lt; </buttom></router-link>
-  <router-link :to="{path: nextPageQuery}"><buttom> &gt; </buttom></router-link>
-  <!-- <router-link :to="{path: lastPageQuery}">last page</router-link> -->
+  <div style="
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: auto;"
+  >
+    <!-- <router-link :to="{path: firstPageQuery}">first page</router-link> -->
+    <router-link :to="{path: prevPageQuery}"><button> &lt; </button></router-link>
+    {{ currentPage }}
+    <router-link :to="{path: nextPageQuery}"><button> &gt; </button></router-link>
+    <!-- <router-link :to="{path: lastPageQuery}">last page</router-link> -->
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -20,7 +31,9 @@ import ImageBox from "@/components/ImageBox.vue";
 // vue-core
 import { 
   ref,
-  onUpdated, onMounted, 
+  // onUpdated, 
+  onMounted, 
+  onBeforeUpdate,
 } from "vue";
 
 // vue-route
@@ -37,10 +50,13 @@ const prevPageQuery = ref("")
 const nextPageQuery = ref("")
 // const firstPageQuery = ref("")
 // const lastPageQuery = ref("")
+const currentPage = ref(0)
+const currentQuery = ref("")
 const imageSrc = ref("/favicon.ico")
 const imageList = ref<IImage[]>([])
 
 let image : IImage|undefined
+let lastQuery = ""
 
 const data = store.imageData // this line works well as it's in hook function
 // functions
@@ -60,31 +76,36 @@ function getImage(query:string): IImage|undefined {
 }
 // load image item to template
 async function reloadTemplate(image:IImage) {
+  if (lastQuery === image.query) return
+  lastQuery = image.query
   // console.log("reloadTemplate", image) // seems well
   // didn't outputed .what the fuck..
   // firstPageQuery.value = image.firstPageQuery
   // lastPageQuery.value = image.lastPageQuery
   prevPageQuery.value = image.prevPageQuery
   nextPageQuery.value = image.nextPageQuery
+  currentPage.value = findIndex(image.query)
   imageSrc.value = image.image
-  imageList.value = []
+  let list = []
   let idx = findIndex(image.query)
   idx -= 3
   if (idx < 1) idx = 1
-  for (let i = 0; i<data.preloadLength; i++) {
+  for (let i = 0; i < data.preloadLength + data.preloadLength/2; i++) {
     const image = data.imageRecords.get(i+idx)
     if (typeof image !== 'undefined')
-      imageList.value.push(image)
+      list.push(image)
   }
+  imageList.value = list
+  currentQuery.value = image.query
 }
 // preload image
-async function preloadImage(image: IImage) {
-  const tag = new Image()
-  tag.onerror = () => {
-    console.log("load", image.image, "error")
-  }
-  tag.src = image.image
-}
+// async function preloadImage(image: IImage) {
+//   const tag = new Image()
+//   tag.onerror = () => {
+//     console.log("load", image.image, "error")
+//   }
+//   tag.src = image.image
+// }
 // preload next N images
 async function nextNImages(query:string, n:number) {
   if (n < 0) return
@@ -103,7 +124,7 @@ async function nextNImages(query:string, n:number) {
     }
     if (typeof image !== 'undefined') {
       setImage(query, image)    
-      preloadImage(image)
+      // preloadImage(image)
     }
   }
   // if not found, (1)download and put it into records and (2)preload the image.
@@ -133,7 +154,7 @@ async function prevNImages(query:string, n:number) {
     }
     if (typeof image !== 'undefined') {
       setImage(query, image)    
-      preloadImage(image)
+      // preloadImage(image)
     }
   }
   // if not found, (1)download and put it into records and (2)preload the image.
@@ -151,6 +172,7 @@ onMounted(async () => {
   await router.isReady(); // use this or will get '/' only
   console.log(route.fullPath) // /s/:key/:id ( /s/b028d14f3d/2599914-1 )
   
+  // lastPath = route.fullPath
   // if a new gallery
   if (route.fullPath != data.query) {
     data.imageRecords = new Map<number, IImage>() // initial a new view
@@ -178,8 +200,10 @@ onMounted(async () => {
   // nextNImages(query, data.preloadLength)
 });
 
-onUpdated(async () => {
-  console.log("Gallery: onUpdated")
+// onUpdated(async () => {
+//   console.log("Gallery: onUpdated")
+onBeforeUpdate(async () => {
+  console.log("Gallery: onBeforeUpdate")
   await router.isReady()
   console.log(route.fullPath)
 

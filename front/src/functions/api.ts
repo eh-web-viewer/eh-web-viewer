@@ -1,9 +1,16 @@
+import { chopString } from "@/functions/utils";
+
 async function myFetch(query: string): Promise<any> {
   if (!query.startsWith("/")) {
     query = "/"+query
   }
-  const respJson = await fetch("/api" + query)
-                        .then(response => response.json())
+  const respJson = await fetch("/api" + query, {
+    method: "GET",
+    headers: {
+      "X-Some-Header": "eh-web-viewer.moonchan.xyz", // it works
+    },
+  })
+    .then(response => response.json())
   return respJson
 }
 
@@ -39,7 +46,7 @@ function parseGallerySummary(obj: any): IGallerySummary {
   const date : string = obj.date!
   // results like "1234 pages."
   const str = obj.pages!
-  const regex = /[\d]+/g 
+  const regex = /\d+/g 
   const pages = str.match(regex)?.join("") ?? ""
   // galleries
   const seeds : string = obj.seeds!
@@ -84,7 +91,7 @@ function parseIndex(obj: any): IIndex {
   const query : string = obj.query!
   // results like "123,456 results."
   const str = obj.results!
-  const regex = /[\d]+/g 
+  const regex = /\d+/g 
   const results = str.match(regex)?.join("") ?? ""
   // nextpage "var nexturl=\"https://exhentai.org/?next=2559818\";"
   const nextPage : string = obj.next_page!
@@ -150,13 +157,8 @@ async function fetchGallery(query: string): Promise<IGallery> {
   })
 }
 
-// IImage
-function chopString(s:string, prefix:string, surfix?:string): string {
-  const s1 = s.substring(prefix.length)
-  if (typeof surfix === 'undefined') return s1
-  const s2 = s1.substring(0, s1.length-surfix.length)
-  return s2
-}
+// IImage, fetchImage
+
 interface IImage {
   query : string
   galleryQuery : string
@@ -173,7 +175,7 @@ function parseImage(obj : any): IImage {
   const error = obj.error!
   const nextPageQuery = chopString(obj.next_page, "https://exhentai.org")
   const prevPageQuery = chopString(obj.prev_page, "https://exhentai.org")
-  const altQuery = chopString(obj.next_page, "return nl('", "')")
+  const altQuery = chopString(obj.alt_image, "return nl('", "')")
   const imageObj: IImage = {
     query : query,
     galleryQuery: galleryQuery,
