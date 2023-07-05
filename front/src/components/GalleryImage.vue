@@ -1,13 +1,13 @@
 <template>
 
-<img 
-  :id="id"
-  :src="src" 
-  :alt="src"
-  :style="{width: '100%', height : minHeight}"
-  :loading="lazy"
-  @load="onImageLoad"
->
+  <img 
+    :id="id"
+    :src="src" 
+    :alt="src"
+    :style="{width: '100%', height : minHeight}"
+    :loading="lazy"
+    @load="onImageLoad"
+  >
 
 </template>
 

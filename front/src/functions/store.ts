@@ -1,8 +1,10 @@
-import { Ref } from 'vue'
-import { reactive } from 'vue'
+import {
+   ref, reactive,
+   Ref,
+} from 'vue'
 // import { RouteLocationNormalizedLoaded, Router } from 'vue-router'
 // import { useRoute, useRouter } from 'vue-router'
-// import { IIndex } from "@/functions/api"
+import { IImage } from "@/functions/api"
 
 class Store<T> {
   private _cnt: number = 0
@@ -43,7 +45,7 @@ class Store<T> {
 //   value: T
 // }
 
-const store: Record<string, Store<any>> = {
+const recoder: Record<string, Store<any>> = {
   test : new Store<number[]>([1]),
 }
 
@@ -109,5 +111,35 @@ reactives.test = reactive({a:1,b:""})
 //   router: null as any as Router,
 // }
 
+const store = {
+  indexData : {
+    query : "invalid",
+    nextPage : "",
+    showingLists : reactive<GallerySummary[]>([]),
+    showableLists : reactive<GallerySummary[]>([]),
+  },
+  galleryData : {
+    query : "invalid",
+    showingLists : reactive<Image[]>([]),
+    showableLists : reactive<Image[]>([]),
+  },
+  imageData : {
+    query : "invalid",
+    preloadLength : 5,
+    // imageLists : reactive<Image[]>([]), // Proxy(Array)
+    imageRecords : new Map<number, IImage>(), // key: query, value: the Image of that query
+    fetchedRecords : new Set<string>(),
+    // image : ref<IImage>({
+    //   query : "undefined",
+    //   galleryQuery : "",
+    //   nextPageQuery : "",
+    //   prevPageQuery : "",
+    //   image : "",
+    //   altQuery : "",
+    //   error : "",
+    // } as IImage), // not used
+  },
+}
+
 export type { Image, GallerySummary }
-export { store, referances, reactives } 
+export { recoder, store, referances, reactives } 

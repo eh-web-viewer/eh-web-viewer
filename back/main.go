@@ -61,25 +61,14 @@ func App() *fiber.App {
 	app.Get("/api/*", func(c *fiber.Ctx) (err error) {
 		//
 		originalURL := c.OriginalURL()
-		query := originalURL[5:]
-		// path := c.Params("*")
-		// query := string(c.Request().URI().QueryString())
-		// if query != "" && path != "" {
-		// 	query = path + "/?" + query
-		// } else if query != "" && path == "" {
-		// 	query = "?" + query
-		// }
-		// if query == "" {
-		// 	query = path
-		// }
-		// // query = exhentai/{here}, includes '?' part
+		query := originalURL[4:]
 
 		var r any
-		if strings.HasPrefix(query, "g/") { // gallery
+		if strings.HasPrefix(query, "/g/") { // gallery
 			r, err = api.QueryGalleryPreview(query)
-		} else if strings.HasPrefix(query, "s/") { // image
+		} else if strings.HasPrefix(query, "/s/") { // image
 			r, err = api.QueryImage(query)
-		} else if strings.HasPrefix(query, "gallerytorrents.php") {
+		} else if strings.HasPrefix(query, "/gallerytorrents.php") {
 			r, err = api.QueryTorrents(query)
 		} else { // index
 			r, err = api.QueryIndex(query)
@@ -92,18 +81,10 @@ func App() *fiber.App {
 
 	})
 	app.Get("/image/*", func(c *fiber.Ctx) error {
-		path := c.Params("*")
-		query := string(c.Request().URI().QueryString())
-		if query != "" && path != "" {
-			query = path + "/?" + query
-		} else if query != "" && path == "" {
-			query = "?" + query
-		}
-		if query == "" {
-			query = path
-		}
+		originalURL := c.OriginalURL()
+		query := originalURL[6:]
 
-		if strings.HasPrefix(query, "s/") { // image
+		if strings.HasPrefix(query, "/s/") { // image
 			r, err := api.QueryImage(query)
 			if err != nil {
 				return err
@@ -113,48 +94,6 @@ func App() *fiber.App {
 			return c.JSON("nop")
 		}
 
-	})
-
-	// not used, cache will cause problem
-	// cnt := 1
-	index := func(accepts, s string) int {
-		i := strings.Index(accepts, s)
-		if i < 0 {
-			return 999
-		}
-		return i
-	}
-	// not used, cache will cause problem
-	app.Get("/s/*", func(c *fiber.Ctx) error {
-		accept := c.GetReqHeaders()["Accept"]
-		if index(accept, "html") < index(accept, "image") {
-			// return html page
-			// log.Println(c.Accepts("html"), cnt)
-			// cnt++
-			return c.SendFile(WEB_ROOT + "/index.html")
-		}
-		// 302
-		path := "s/" + c.Params("*")
-		query := string(c.Request().URI().QueryString())
-		if query != "" && path != "" {
-			query = path + "/?" + query
-		} else if query != "" && path == "" {
-			query = "?" + query
-		}
-		if query == "" {
-			query = path
-		}
-
-		log.Println(query)
-		if strings.HasPrefix(query, "s/") { // image
-			r, err := api.QueryImage(query)
-			if err != nil {
-				return err
-			}
-			return c.Redirect(r.Image, fiber.StatusFound) // 使用 fiber.StatusFound (302) 作为状态码
-		} else {
-			return c.JSON("nop")
-		}
 	})
 
 	return app
@@ -168,10 +107,12 @@ func main() {
 	mycurl.SetClient(mycurl.V6POOL) // curl with different ip
 
 	// set mycurl before this line
+	// raw mirror
 	exproxy.SetClient(func() *http.Client { return mycurl.Client() })
 	go exproxy.Proxy(MIRROR_ADDR)
 
 	// set mycurl before this line
+	// api server
 	app := App()
 	err := app.Listen(API_ADDR)
 	log.Println(err)
