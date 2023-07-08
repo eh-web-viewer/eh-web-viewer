@@ -1,13 +1,15 @@
+not used
+
 <template>
 
 <div style="display: flex;">
-  <div @click="clicked" class="gallery-preview" style="align-items: center; width: 100%; margin: 30px 0px">  
+  <div @click="clicked" class="gallery-preview" style="align-items: center; width: 100%; margin: 30px 0px;  background-color: RGBA(255,255,255,0.1);">  
     <router-link :to="{ path: summary.url.substring('https://exhentai.org'.length) }">
-      <div style="display: flex; width: 100%; height: 280px; align-items:center ">
-        <div class="cover-container" style="flex: 1; height: 100%; padding: 10px; display: flex; align-items: center; justify-content: center;">      
-          <img :src="src" :alt="src" loading="lazy" style="max-height: 100%; max-width: 100%; width: auto; height: auto" onerror="this.onerror=null; this.src=this.src">
+      <div class="gallery-continer" style="display: flex; width: 100%; height: 280px; align-items:center ">
+        <div class="gallery-cover-container" style="flex: 1; height: 100%; display: flex; align-items: center; justify-content: center;">      
+          <img class="gallery-cover" :src="src" :alt="src" loading="lazy" style="max-height: 100%; max-width: 100%; width: auto; height: auto" onerror="this.onerror=null; this.src=this.src">
         </div>
-        <div style="height: 100%; flex: 2; display: flex; position: relative;">      
+        <div class="gallery-info" style="height: 100%; flex: 2; display: flex; position: relative;">      
           <p style="align-items:baseline; text-align: left;">
             {{ summary.title }}
           </p>
@@ -51,13 +53,6 @@ function clicked() {
 
   
 }
-
-// function retry() {
-//   console.log("GalleryPreview: retry")
-//   const temp = src.value
-//   src.value = "/favicon.ico"
-//   src.value = temp
-// }
 
 const src = ref(props.summary.preview.replace(/s.exhentai.org/g, 's-ex.moonchan.xyz'))
 

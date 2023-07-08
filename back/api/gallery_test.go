@@ -71,7 +71,7 @@ func TestFetch(t *testing.T) {
 		return
 	}
 
-	galleryPreview.Url, err = queryAllStringList(doc, "//div[@class='gdtl']//a", "href")
+	galleryPreview.Urls, err = queryAllStringList(doc, "//div[@class='gdtl']//a", "href")
 	if err != nil {
 		return
 	}

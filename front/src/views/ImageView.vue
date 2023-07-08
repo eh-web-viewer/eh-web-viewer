@@ -18,7 +18,7 @@
   >
     <!-- <router-link :to="{path: firstPageQuery}">first page</router-link> -->
     <router-link :to="{path: prevPageQuery}"><button> &lt; </button></router-link>
-    {{ currentPage }}
+    {{ currentPage }}<!-- of {{ totalPages }} -->
     <router-link :to="{path: nextPageQuery}"><button> &gt; </button></router-link>
     <!-- <router-link :to="{path: lastPageQuery}">last page</router-link> -->
   </div>
@@ -44,7 +44,7 @@ const router = useRouter();
 // get datas
 import { store } from "@/functions/store";
 import { fetchImage, IImage } from "@/functions/api";
-import { loadFullPath } from '@/functions/utils'
+import { findIndexFromImageUrl, loadFullPath } from '@/functions/utils'
 
 const prevPageQuery = ref("")
 const nextPageQuery = ref("")
@@ -61,18 +61,14 @@ let lastQuery = ""
 const data = store.imageData // this line works well as it's in hook function
 // functions
 // for use set
-function findIndex(query:string): number{
-  const arr = query.split('-')
-  return parseInt(arr[arr.length - 1])
-}
 function hasImage(query:string): boolean {
-  return data.imageRecords.has(findIndex(query))
+  return data.imageRecords.has(findIndexFromImageUrl(query))
 }
 function setImage(query:string, image:IImage) {
-  return data.imageRecords.set(findIndex(query), image)
+  return data.imageRecords.set(findIndexFromImageUrl(query), image)
 }
 function getImage(query:string): IImage|undefined {
-  return data.imageRecords.get(findIndex(query))
+  return data.imageRecords.get(findIndexFromImageUrl(query))
 }
 // load image item to template
 async function reloadTemplate(image:IImage) {
@@ -84,10 +80,10 @@ async function reloadTemplate(image:IImage) {
   // lastPageQuery.value = image.lastPageQuery
   prevPageQuery.value = image.prevPageQuery
   nextPageQuery.value = image.nextPageQuery
-  currentPage.value = findIndex(image.query)
+  currentPage.value = findIndexFromImageUrl(image.query)
   imageSrc.value = image.image
   let list = []
-  let idx = findIndex(image.query)
+  let idx = findIndexFromImageUrl(image.query)
   idx -= 3
   if (idx < 1) idx = 1
   for (let i = 0; i < data.preloadLength + data.preloadLength/2; i++) {
@@ -115,7 +111,7 @@ async function nextNImages(query:string, n:number) {
   if (hasImage(query)) {
     image = getImage(query)
   } else {
-    console.log("miss", query)
+    // console.log("miss", query)
     if (data.fetchedRecords.has(query)) return;
     data.fetchedRecords.add(query)
     image = await fetchImage(query)
@@ -145,7 +141,7 @@ async function prevNImages(query:string, n:number) {
   if (hasImage(query)) {
     image = getImage(query)
   } else {
-    console.log("miss", query)
+    // console.log("miss", query)
     if (data.fetchedRecords.has(query)) return;
     data.fetchedRecords.add(query)
     image = await fetchImage(query)
@@ -168,9 +164,9 @@ async function prevNImages(query:string, n:number) {
 
 // first get into `/s/*` will only trigger onMounted function
 onMounted(async () => { 
-  console.log("Gallery: onMount");
+  // console.log("Gallery: onMount");
   await router.isReady(); // use this or will get '/' only
-  console.log(route.fullPath) // /s/:key/:id ( /s/b028d14f3d/2599914-1 )
+  // console.log(route.fullPath) // /s/:key/:id ( /s/b028d14f3d/2599914-1 )
   
   // lastPath = route.fullPath
   // if a new gallery
@@ -179,19 +175,19 @@ onMounted(async () => {
     data.fetchedRecords = new Set<string>()
   }
   // debug
-  console.log(data)
+  // console.log(data)
   data.query = route.fullPath
-  console.log(data)
+  // console.log(data)
   // get image json data
   const query = loadFullPath(route.fullPath)
   image = getImage(query)
   if (typeof image === 'undefined') {
-    console.log(query, "not in records")
+    // console.log(query, "not in records")
     image = await fetchImage(query)
     if (typeof image !== 'undefined') {
       setImage(query, image)
     } else {
-      console.log(query, "fetchefailed")
+      // console.log(query, "fetchefailed")
     }
   }
   reloadTemplate(image)
@@ -203,20 +199,20 @@ onMounted(async () => {
 // onUpdated(async () => {
 //   console.log("Gallery: onUpdated")
 onBeforeUpdate(async () => {
-  console.log("Gallery: onBeforeUpdate")
+  // console.log("Gallery: onBeforeUpdate")
   await router.isReady()
-  console.log(route.fullPath)
+  // console.log(route.fullPath)
 
   // get image json data
   const query = loadFullPath(route.fullPath)
   image = getImage(query)
   if (typeof image === 'undefined') { // if not hit preloads
-    console.log(query, "not in records")
+    // console.log(query, "not in records")
     image = await fetchImage(query)
     if (typeof image !== 'undefined') {
       setImage(query, image)
     } else {
-      console.log(query, "fetch failed")
+      // console.log(query, "fetch failed")
     }
   }    
   reloadTemplate(image)

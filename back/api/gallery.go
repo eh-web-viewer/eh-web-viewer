@@ -29,13 +29,13 @@ type GalleryPreview struct {
 	Tags        map[string][]string `json:"tags"`         // language:chinese ...
 	Category    string              `json:"category"`     // doujin, manga ...
 	// Rate        string   `json:"rate"`         // stars from 1 to 10
-	// Date        string   `json:"date"`         // publish date
+	Date  string `json:"date"`  // publish date
 	Pages string `json:"pages"` // how many pages are there in gallery
 	// Seeds       []string `json:"seeds"`        // url to the seeds link
 	// Url         string   `json:"url"`          // url to the gallery page
 
 	Images []string `json:"images"` // url of previewing pics
-	Url    []string `json:"url"`    // url of pics
+	Urls   []string `json:"urls"`   // url of pics
 
 	Comments []*Comment `json:"comments"` //comments of the gallery
 
@@ -139,6 +139,10 @@ func queryGalleryPreview(query string) (galleryPreview *GalleryPreview, err erro
 	if err != nil {
 		galleryPreview.Error += err.Error() + "\n"
 	}
+	galleryPreview.Date, err = findOneAndSelectAttr(doc, "//div[@id='gdd']/table/tbody/tr[1]/td[2]", InnerText)
+	if err != nil {
+		galleryPreview.Error += err.Error() + "\n"
+	}
 	galleryPreview.Pages, err = findOneAndSelectAttr(doc, "//div[@id='gdd']/table/tbody/tr[6]/td[2]", InnerText)
 	if err != nil {
 		galleryPreview.Error += err.Error() + "\n"
@@ -149,7 +153,7 @@ func queryGalleryPreview(query string) (galleryPreview *GalleryPreview, err erro
 		return
 	}
 
-	galleryPreview.Url, err = queryAllStringList(doc, "//div[@class='gdtl']//a", "href")
+	galleryPreview.Urls, err = queryAllStringList(doc, "//div[@class='gdtl']//a", "href")
 	if err != nil {
 		galleryPreview.Error += err.Error() + "\n"
 		return

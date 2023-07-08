@@ -93,7 +93,7 @@ func newClients(clientType string /*, ips ...net.IP*/) []*http.Client {
 
 // as a client.
 
-const MAX_CNT = 512 * my_if.BATCH_SIZE
+const MAX_CNT = MAX_SINGLE_CNT * my_if.BATCH_SIZE
 
 var clientType = "vanilla"
 var clients = newClients(clientType)

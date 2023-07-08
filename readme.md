@@ -43,7 +43,32 @@ prev page
 
 ### TODO
 
-后端读一下配置。
+what's next:
+
+search:
+
+- [] but how?
+
+index:
+
+- [] show tags and other info
+- [] cover image should load the first /s/
+- [] async tags.
+
+gallery:
+
+- [] show tags and other info
+- [] 2 mode (waterfall or pages)
+- [] 要不直接加载大图得了
+
+ui/ux:
+
+- [] 后端读一下配置。
+- 
+
+----
+
+
 
 ~~curl加上proxy。~~
 ~~去用fiber里的~~
@@ -91,3 +116,55 @@ TODO
 详细页面
 
 store.ts中存储两个页面的meta和list
+
+```js
+const queryString = 'param1=value1&param2=value2&param3=value3';
+const params = new URLSearchParams(queryString);
+
+// Access individual query parameters
+console.log(params.get('param1')); // "value1"
+console.log(params.get('param2')); // "value2"
+console.log(params.get('param3')); // "value3"
+
+// Get all query parameters as an object
+const paramObject = {};
+for (const [key, value] of params) {
+  paramObject[key] = value;
+}
+console.log(paramObject); // { param1: "value1", param2: "value2", param3: "value3" }
+
+```
+```js
+const code = 'console.log("Hello, World!");';
+eval(code); // Output: Hello, World!
+
+```
+```vue
+  <router-link :to="{ path: '/?next=1' }">
+```
+will trigger update
+
+```vue
+
+  <div v-show="prevURLString !== route.fullPath">
+    <router-link :to="prevLocation">
+      <button id="index-top-hook" style="width: 100%;">上一页</button>
+    </router-link>
+  </div>
+```
+
+template not work   
+
+
+```ts
+  const newImageList:IImage[] = gallery.value.urls.map(async (url) => {
+    const image = await fetchImage(url)
+    return image
+  })
+```
+
+(method) Array<string>.map<Promise<IImage>>(callbackfn: (value: string, index: number, array: string[]) => Promise<IImage>, thisArg?: any): Promise<IImage>[]
+
+Type 'Promise<IImage>[]' is not assignable to type 'IImage[]'.
+  Type 'Promise<IImage>' is missing the following properties from type 'IImage': query, galleryQuery, nextPageQuery, prevPageQuery, and 3 more.ts(2322)
+

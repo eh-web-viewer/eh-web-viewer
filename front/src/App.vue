@@ -10,15 +10,17 @@
     reactives.galleryMetaData: {{ reactives.galleryMetaData }}
   </pre>  
   
-  <header style="">
-  <!-- <header style="display:none"> -->
+  <!-- <header> -->
+  <header style="display:none">
     <span><router-link :to="{path: '/'}">home</router-link></span>
     <span><router-link :to="{path: '/g/2597892/20f9db69dd/'}">gallery</router-link></span>
     <span><router-link :to="{path: '/s/b028d14f3d/2599914-1'}">image</router-link></span>
   </header>
 
-  <router-view />    
-  
+  <!-- keep-alive not tested -->
+  <!-- <keep-alive> -->
+    <router-view />    
+  <!-- </keep-alive> -->
 </template>
 
 <script lang="ts" setup>

@@ -64,7 +64,7 @@ button:focus-visible {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  /* padding: 2rem; */
   text-align: center;
 }
 
@@ -79,4 +79,55 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-} 
+}
+
+/* GalleryInfo */
+
+img {
+  max-width: 100%; 
+  max-height: 100%; 
+  width: auto; 
+  height: auto;
+}
+
+.gallery-info-continer{
+  display: flex; 
+  width: 100%; 
+  height: 100%; 
+  align-items: left; 
+  color: white;
+}
+
+.gallery-info-data-title{
+  align-items:baseline; 
+  text-align: left;
+  overflow: hidden; 
+  font-size: 12px; 
+  max-height: 10%; /* 设置最大高度，相当于两行文本的高度 */
+  line-height: 1.2em; /* 设置行高，确保两行文本的显示 */
+  /* width: 90%; */
+  margin: 0px 10px;
+  padding: 0px 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.gallery-info-data-tags{
+  max-height: 80%; 
+  text-align: left; 
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: hidden;
+}
+.gallery-info-data-tag-group{
+  text-align: left; 
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: hidden;
+}
+
+.gallery-info-tag-element {
+  font-size: 12px; 
+  margin: 2px;
+  background-color: rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
