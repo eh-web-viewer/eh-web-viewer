@@ -1,10 +1,11 @@
 <template>
-    <!-- <search-bar></search-bar> -->
-  
-  <div v-show="prevURLString !== route.fullPath">
-    <router-link :to="prevLocation">
-      <button id="index-top-hook" style="width: 100%;" @click="clearPreviewList">上一页</button>
-    </router-link>
+  <!-- <div class="scroll-hook" @scroll="handleScroll"> -->
+  <search-bar :show-search-box="showSearchBox" @submit="search"></search-bar> 
+
+  <div v-show="prevPageButtonShow">
+    <!-- <router-link :to="prevURLString"> -->
+      <button id="index-top-hook" style="width: 100%;" @click="prevPageHandler">上一页</button>
+    <!-- </router-link> -->
   </div>
 
   <template v-for="summary in previewList" :key="summary">
@@ -15,11 +16,12 @@
     </div>
   </template>
 
-  <div v-show="nextURLString !== route.fullPath">
-    <router-link :to="nextLocation">
-      <button id="index-bottom-hook" style="width: 100%;">下一页</button>
-    </router-link>
+  <div v-show="nextPageButtonShow">
+    <!-- <router-link :to="nextURLString"> -->
+      <button id="index-bottom-hook" style="width: 100%;" @click=nextPageHandler>下一页</button>
+    <!-- </router-link> -->
   </div>
+  <!-- </div> -->
 </template>
 
 <script setup lang="ts">
@@ -27,13 +29,14 @@
 const HOST = "https://exhentai.org"
 // components
 import GalleryInfo from "@/components/GalleryInfo.vue";
-// import SearchBar from "@/components/SearchBar.vue";
+import SearchBar from "@/components/SearchBar.vue";
 // vue-core
 import { 
   ref,
   onBeforeMount,
   onMounted, 
   onBeforeUpdate, 
+  onBeforeUnmount,
 } from "vue"
 // vue-route
 import { 
@@ -55,10 +58,14 @@ import {
 const previewList = ref<IGallery[]>([])
 const prevURLString = ref<string>("")
 const nextURLString = ref<string>("")
-const prevLocation = ref<RouteLocationRaw>({})
-const nextLocation = ref<RouteLocationRaw>({})
+const prevLocation = ref<RouteLocationRaw>(route.fullPath)
+const nextLocation = ref<RouteLocationRaw>(route.fullPath)
+const showSearchBox = ref(true)
+const prevPageButtonShow = ref(false)
+const nextPageButtonShow = ref(false)
 
 let lastPath : string
+let lastScrollTop = 0
 
 function clicked(summary:IGallery) {
   const galleryData = reactives.galleryMetaData
@@ -105,13 +112,27 @@ function clearPreviewList() {
   console.log("clearPreviewList")
   previewList.value = [] 
 }
+
+function prevPageHandler() {
+  prevPageButtonShow.value = false
+  nextPageButtonShow.value = false
+  clearPreviewList()
+  updateIndex(prevURLString.value)
+}
+function nextPageHandler() {
+  nextPageButtonShow.value = false
+  // clearPreviewList()
+  updateIndex(nextURLString.value)
+}
+
 function updateIndex(url:string) {
   // for no ducaple requests
-  if (lastPath === url) return 
+  if (url === '' || lastPath === url) return 
   lastPath = url
   console.log("!!updateIndex", url)
   fetchIndex(url)
   .then((index) => { // then is accutally a call back?
+    router.push(url)
     // set prevPage and nextPage
     // console.log(index)
     const nexturl:string = getVar("nexturl", index.nextPage, HOST+route.fullPath)
@@ -130,11 +151,33 @@ function updateIndex(url:string) {
     console.log(index)
     previewList.value = [...previewList.value, ...index.galleries]
 
+    nextPageButtonShow.value = true
   })
   console.log("updateIndex", url, "end")
 
 }
-
+function handleScroll() {
+  // var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+  const st = document.documentElement.scrollTop; 
+  // console.log(isIndex, st, lastScrollTop, st-lastScrollTop)
+  if (st > lastScrollTop + 10) {
+    // downscroll code
+    showSearchBox.value = false
+  } else if (st < lastScrollTop - 10) {
+    // upscroll code
+    showSearchBox.value = true
+  } // else was horizontal scroll
+  lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+}
+function search(searchString:string) {
+  console.log(searchString)
+  prevPageButtonShow.value = false
+  nextPageButtonShow.value = false
+  prevURLString.value = ''
+  nextURLString.value = ''
+  previewList.value = []
+  updateIndex(searchString)
+}
 
 onBeforeMount(async () => {
   document.title = "EhWebViewer"
@@ -142,14 +185,15 @@ onBeforeMount(async () => {
   await router.isReady() // use this or will get '/' only
   console.log(route.fullPath)
   console.log(route)
-  prevURLString.value = route.fullPath
-  nextURLString.value = route.fullPath
+  // prevURLString.value = route.fullPath
+  // nextURLString.value = route.fullPath
   updateIndex(route.fullPath)
 
 })
 
 // initial hooks
 onMounted(() => {
+  // auto page turning
   const entry = document.querySelector("#index-bottom-hook")
   console.log(entry)
   if (entry !== null) {// it must not null? dunno
@@ -162,8 +206,9 @@ onMounted(() => {
           // console.log("index:", `Remaining distance to initial entry: ${remainingDistance}px`); 
           if (remainingDistance < 1080) { // will affect initial images loaded
             // seems well
-            // console.log("observer triggered")
-            router.push(nextLocation.value)
+            console.log("observer triggered", nextURLString.value)
+            // if (nextPageButtonShow.value)
+            //   updateIndex(nextURLString.value)
           }
         });
       }, {
@@ -174,15 +219,21 @@ onMounted(() => {
     )
     setTimeout( () => observer.observe(entry), 500);
   }
+  // scroll
+  window.addEventListener('scroll', handleScroll);
+
 })
 
 onBeforeUpdate(async () => {
   console.log("indexView: onBeforeUpdate")
   await router.isReady() // use this or will get '/' only
   console.log(route.fullPath)
-  updateIndex(route.fullPath)
-
+  // updateIndex(route.fullPath)
 })
 
+onBeforeUnmount(() => {
+  // will it run on some day?
+  window.removeEventListener('scroll', handleScroll);
+})
 </script>
   

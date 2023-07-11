@@ -110,6 +110,9 @@ img {
   padding: 0px 10px;
   background-color: rgba(0, 0, 0, 0.2);
 }
+.gallery-info-data-catagory{
+  width: 50%;
+}
 .gallery-info-data-tags{
   max-height: 80%; 
   text-align: left; 
@@ -130,4 +133,113 @@ img {
   margin: 2px;
   background-color: rgba(0, 0, 0, 0.2);
   white-space: nowrap;
+}
+
+
+/* SearchBox */
+
+.search-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: calc(100% - 60px);
+  /* height: 60px; */
+  background-color: #202020;
+  padding: 10px;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(-200%);
+  margin: 20px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  
+  z-index: 2;
+}
+
+.search-box.show {
+  transform: translateY(0);
+  /* height: max-content; */
+}
+
+.search-box-input-continer {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+
+.search-box-input{
+  width: calc(100% - 20px);
+  /* height: max-content; */
+  height: 50px;
+  font-size: 18px;
+  padding: 10px;
+}
+
+.search-box-clear-button {
+  position: absolute;
+  /* top: 50%; */
+  right: 15px;
+  /* transform: translateY(-50%); */
+  cursor: pointer;
+  
+  margin: auto;
+  height: calc(50px + 2*10px);
+  min-width: calc(50px + 2*10px);
+  padding: 10px;
+  font-size: 28px;
+
+  background-color: transparent;
+  border: none;
+}
+
+/* not used */
+.scroll-container {
+  height: 500px;
+  overflow-y: scroll;
+  padding-top: 50px; /* 为容器添加与搜索框高度相同的上边距 */
+}
+
+.search-box-options {
+  width: 100%;
+  /* max-height: 200px; */
+  height: 100%;
+  overflow-y: auto;
+
+  display: flex;  
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+}
+
+.search-box-catagory {
+  width: calc(50% - 20px);
+  /* margin: 15px calc(10% - 25px) ; */
+  padding: 10px;
+  /* background-color: gold; */
+}
+
+.serch-box-catagory-content {
+  width: 100%;
+  display: block;
+}
+
+.dummy {
+  height: 100px;
+}
+
+.dummy-show {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.scroll-lock {
+  overflow: hidden;
 }

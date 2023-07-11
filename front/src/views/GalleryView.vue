@@ -3,7 +3,7 @@
     <gallery-info :gallery="gallery" v-if="(typeof gallery !== 'undefined')"></gallery-info>
     
     <div v-show="(curPage > 0)" v-if="(typeof gallery !== 'undefined')">
-      <router-link :to="prevPage(curPage)">
+      <router-link :to="{path: gallery.query, query: { p: curPage-1 }, replace: true}">
         <button id="gallery-bottom-hook" style="width: 100%;">上一页</button>
       </router-link>
     </div>
@@ -16,7 +16,7 @@
     </template>
 
     <div v-show="(curPage < maxPage)" v-if="(typeof gallery !== 'undefined')">
-      <router-link :to="nextPage(curPage)">
+      <router-link :to="{path: gallery.query, query: { p: curPage+1 }, replace: true}">
         <button id="gallery-bottom-hook" style="width: 100%;">下一页</button>
       </router-link>
     </div>
@@ -36,7 +36,7 @@ const route = useRoute();
 const router = useRouter();
 
 import { fetchGallery, IGallery } from "@/functions/api";
-import { chopString, findPath, getNumberFromString, getParam, findIndexFromImageUrl } from "@/functions/utils";
+import { chopString, getNumberFromString, getParam, findIndexFromImageUrl } from "@/functions/utils";
 import GalleryInfo from "@/components/GalleryInfo.vue";
 
 const gallery = ref<IGallery>()
@@ -47,15 +47,20 @@ const maxPage = ref(0)
 // let curPage = 0
 // let maxPage = 0
 let lastQuery = ""
-
-function nextPage(curPage:number) {
-  if (typeof gallery.value === 'undefined') return "/"
-  return findPath(gallery.value.query)+"?p=" + (curPage+1)
-}
-function prevPage(curPage:number) {
-  if (typeof gallery.value === 'undefined') return "/"
-  return findPath(gallery.value.query)+"?p=" + (curPage-1)
-}
+// not used
+// function nextPage(curPage:number) {
+//   if (typeof gallery.value === 'undefined') return "/"
+//   return findPath(gallery.value.query)+"?p=" + (curPage+1)
+// }
+// function prevPage(curPage:number) {
+//   if (typeof gallery.value === 'undefined') return "/"
+//   return findPath(gallery.value.query)+"?p=" + (curPage-1)
+// }
+// not used
+// function pageTo(page:number) {
+//   if (typeof gallery.value === 'undefined') return "/"
+//   return findPath(gallery.value.query)+"?p=" + (page) 
+// }
 // not used
 // async function loadNextPage() {  
 //   console.log("call loadNextPage", fetching)
@@ -89,29 +94,6 @@ onMounted(async () => {
   
   // imageURLList.value = [...imageURLList.value, ...gallery.value.urls]
   imageURLList.value = gallery.value.urls
-
-  // 
-  // const entry = document.querySelector("#gallery-bottom-hook")
-  // console.log(entry)
-  // if (entry !== null) {// it must not null? dunno
-  //   const observer = new IntersectionObserver((entries) => {
-  //       entries.forEach((entry) => {
-  //         const remainingDistance = entry.boundingClientRect.top - entry.rootBounds!.top;
-  //         if (remainingDistance < 1080 && !fetching) { // will affect initial images loaded
-  //           if (curPage < maxPage){
-  //             // router.push(findPath(gallery.value!.query)+"?p="+(curPage))
-  //             loadNextPage()
-  //           }
-  //         }
-  //       });
-  //     }, {
-  //       root: null,
-  //       rootMargin: '0px 0px 0px', // will affect how much images load before, and this is two times when use 'Xpx'
-  //       threshold: [0, 0.2, 0.4, 0.6, 0.8, 1]
-  //     }
-  //   )
-  //   setTimeout( () => observer.observe(entry), 500);
-  // }
 
 });
 

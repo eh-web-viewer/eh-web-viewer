@@ -2,8 +2,10 @@ package api
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/antchfx/htmlquery"
+	"github.com/eh-web-viewer/eh-web-viewer/mycurl"
 	"golang.org/x/net/html"
 )
 
@@ -21,4 +23,14 @@ func findOneAndSelectAttr(top *html.Node, expr string, name string) (v string, e
 		v = htmlquery.SelectAttr(elem, name)
 	}
 	return
+}
+
+func Post() (err error) {
+	resp, err := mycurl.Fetch("POST", "https://exhentai.org/uconfig.php",
+		map[string]string{"Cookie": COOKIE},
+		strings.NewReader(POSTDATA))
+	if err != nil {
+		return
+	}
+	return resp.Body.Close()
 }

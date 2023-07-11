@@ -1,7 +1,7 @@
 <template>
   <!-- <button @click="()=>{console.log('image',image);console.log('imageList,route.fullPath',imageList, route.fullPath)}"></button> -->
-  <router-link :to="{path: nextPageQuery}">    
-    <div v-for="image in imageList" :key="image.query" v-show="image.query === currentQuery">
+  <router-link :to="{path: nextPageQuery, replace: true}">    
+    <div v-for="image in imageList" :key="image.query" v-show="image.query === currentQuery" style="max-height: 100%;">
       <!-- {{ image.query }} -->
       <ImageBox :image="image" v-if="(typeof image !== 'undefined')" ></ImageBox>
     </div>
@@ -16,10 +16,11 @@
     width: 100%;
     height: auto;"
   >
+    <router-link :to="{path: galleryQuery, query: { p : Math.floor((currentPage-0.5)/20)}, replace: true}"><button style="position: fixed; bottom: 0px; left: 0px"> gallery </button></router-link>
     <!-- <router-link :to="{path: firstPageQuery}">first page</router-link> -->
-    <router-link :to="{path: prevPageQuery}"><button> &lt; </button></router-link>
+    <router-link :to="{path: prevPageQuery, replace: true}"><button> &lt; </button></router-link>
     {{ currentPage }}<!-- of {{ totalPages }} -->
-    <router-link :to="{path: nextPageQuery}"><button> &gt; </button></router-link>
+    <router-link :to="{path: nextPageQuery, replace: true}"><button> &gt; </button></router-link>
     <!-- <router-link :to="{path: lastPageQuery}">last page</router-link> -->
   </div>
 </template>
@@ -50,6 +51,7 @@ const prevPageQuery = ref("")
 const nextPageQuery = ref("")
 // const firstPageQuery = ref("")
 // const lastPageQuery = ref("")
+const galleryQuery = ref("")
 const currentPage = ref(0)
 const currentQuery = ref("")
 const imageSrc = ref("/favicon.ico")
@@ -80,6 +82,7 @@ async function reloadTemplate(image:IImage) {
   // lastPageQuery.value = image.lastPageQuery
   prevPageQuery.value = image.prevPageQuery
   nextPageQuery.value = image.nextPageQuery
+  galleryQuery.value = image.galleryQuery
   currentPage.value = findIndexFromImageUrl(image.query)
   imageSrc.value = image.image
   let list = []

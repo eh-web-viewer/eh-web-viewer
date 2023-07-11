@@ -5,6 +5,7 @@ exproxy/const.go
 const.go
 
 eh-web-viewer
+eh-web-viewer-vanilla
 eh-web-viewer-back
 *.bin
 *.exe

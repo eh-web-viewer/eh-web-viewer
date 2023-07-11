@@ -16,7 +16,7 @@ params:
       </div>
 
       <div class="gallery-info-data-catagory">
-        {{ gallery.category }} 
+        <category-label :category="gallery.category" :selected="true"></category-label>  
       </div>      
 
       <div class="gallery-info-data-score" style="display: none;">
@@ -48,6 +48,7 @@ params:
 <script lang="ts" setup>
 // components
 import ImageBox from '@/components/ImageBox.vue';
+import CategoryLabel from "@/components/CategoryLabel.vue";
 
 import { onMounted, ref } from 'vue'
 import { IGallery, IImage, fetchGallery, fetchImage } from '@/functions/api';

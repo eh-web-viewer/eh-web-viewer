@@ -140,17 +140,20 @@ eval(code); // Output: Hello, World!
 
 ```
 ```vue
+<template>
   <router-link :to="{ path: '/?next=1' }">
+</template>
 ```
 will trigger update
 
 ```vue
-
+<template>
   <div v-show="prevURLString !== route.fullPath">
     <router-link :to="prevLocation">
       <button id="index-top-hook" style="width: 100%;">上一页</button>
     </router-link>
   </div>
+</template>
 ```
 
 template not work   
@@ -168,3 +171,146 @@ template not work
 Type 'Promise<IImage>[]' is not assignable to type 'IImage[]'.
   Type 'Promise<IImage>' is missing the following properties from type 'IImage': query, galleryQuery, nextPageQuery, prevPageQuery, and 3 more.ts(2322)
 
+
+tag的顺序
+
+
+搜搜
+
+tag的过滤
+
+
+```vue
+<template>
+  <div class="scroll-container" @scroll="handleScroll">
+    <div class="content">
+      <!-- 内容 -->
+    </div>
+    <div class="element" :class="{ 'show': showElement }">
+      <!-- 要显示或隐藏的元素 -->
+    </div>
+  </div>
+</template>
+
+<script lang="js">
+export default {
+  data() {
+    return {
+      showElement: false,
+      prevScrollTop: 0
+    };
+  },
+  methods: {
+    handleScroll(event) {
+      console.log("handleScroll")
+      const scrollTop = event.target.scrollTop;
+      
+      if (scrollTop > this.prevScrollTop) {
+        // 向下滚动，隐藏元素
+        this.showElement = false;
+      } else {
+        // 向上滚动，显示元素
+        this.showElement = true;
+      }
+      
+      this.prevScrollTop = scrollTop;
+    }
+  }
+}
+</script>
+
+<style>
+.scroll-container {
+  height: 500px;
+  overflow-y: scroll;
+  position: relative;
+  background-color: aqua;
+}
+
+.content {
+  height: 2000px; /* 超过容器高度以触发滚动 */
+}
+
+.element {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f2f2f2;
+  padding: 10px;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.element.show {
+  opacity: 1;
+}
+</style>
+
+```
+
+scroll
+
+
+迷了，之前query怎么跑起来的
+可能是用了string？
+
+
+```ts
+function myFunction() {
+  return new Promise((resolve, reject) => {
+    // Perform asynchronous operation or any logic here
+
+    if (/* condition for success */) {
+      resolve("Operation completed successfully");
+    } else {
+      reject("Error occurred");
+    }
+  });
+}
+```
+promise 接受一个 函数作为输入初始化
+为其传入两个callback
+运行传入函数,当callback被call时promise完成
+
+```sh
+tsc soup.ts ; node soup.js ; rm soup.js
+```
+
+
+搜索框:
+
+
+doujin
+#9E2720
+
+manga
+#DB6C24
+
+artist cg
+#D38F1D
+
+game cg
+#6A936D
+
+westen
+#AB9F60
+
+non-h
+#5FA9CF
+
+image set
+#325CA2
+
+cosplay
+#6A32A2
+
+asian porn
+#A23282
+
+misc
+#777777
+
+TODO:
+
+docker

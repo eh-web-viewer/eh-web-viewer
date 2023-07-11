@@ -51,7 +51,7 @@ func getPlainTextReader(body io.ReadCloser, encoding string) (io.ReadCloser, err
 // return the proxy function
 func httpHandler(w http.ResponseWriter, r *http.Request) {
 	newUrl := r.URL
-	newUrl.Host = HOST // IP
+	newUrl.Host = HOST
 	newUrl.Scheme = "https"
 
 	req, err := http.NewRequest(r.Method, newUrl.String(), r.Body)
@@ -63,9 +63,10 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	for k, v := range r.Header {
 		req.Header.Set(k, v[0])
 	}
-	if COOKIE != "" {
-		req.Header.Set("Cookie", COOKIE)
-	}
+	// if COOKIE != "" {
+	req.Header.Del("Cookie")
+	req.Header.Set("Cookie", COOKIE)
+	// }
 
 	resp, err := client().Do(req)
 	if err != nil {

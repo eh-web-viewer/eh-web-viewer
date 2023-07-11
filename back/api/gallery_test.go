@@ -18,7 +18,7 @@ func Test_re(t *testing.T) {
 
 func Test_galleryPreviews(t *testing.T) {
 	mycurl.SetClient("proxy")
-	r, _ := queryGalleryPreview("g/2557923/cd8d42df44/?p=1")
+	r, _ := queryGalleryPreview("/g/2557923/cd8d42df44/?p=1")
 	fmt.Println(r)
 	j, _ := json.Marshal(r)
 	fmt.Println(string(j))
@@ -26,7 +26,7 @@ func Test_galleryPreviews(t *testing.T) {
 
 func TestFetch(t *testing.T) {
 	mycurl.SetClient("proxy")
-	query := "g/2559337/4d1b221fc9/?p=1"
+	query := "/g/2559337/4d1b221fc9/?p=1"
 	galleryPreview := &GalleryPreview{}
 
 	resp, _ := mycurl.Fetch("GET", BASE_URL+query,

@@ -93,7 +93,14 @@ func App() *fiber.App {
 		} else {
 			return c.JSON("nop")
 		}
-
+	})
+	app.Get("/post/", func(c *fiber.Ctx) error {
+		return api.Post()
+	})
+	app.Static("/", ".", fiber.Static{
+		Compress: false, // it will generate [filename].tar.gz files.
+		Browse:   false,
+		Download: false, // it will make all things being downloaded. (false is default)
 	})
 
 	return app
@@ -101,10 +108,13 @@ func App() *fiber.App {
 
 func main() {
 	my_if.SetPrefix(my_if.PREFIX)
-	defer my_if.Cleanup()
+	defer my_if.Cleanup() // though it has never run
 
-	// set my_if before mycurl.V6POOL
+	// // set my_if before mycurl.V6POOL
 	mycurl.SetClient(mycurl.V6POOL) // curl with different ip
+
+	// commit above and run this to run a vanilla client
+	// mycurl.SetClient(mycurl.VANILLA)
 
 	// set mycurl before this line
 	// raw mirror

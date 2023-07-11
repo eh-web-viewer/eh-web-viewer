@@ -5,7 +5,7 @@ params:
   src: if image is not set, show this.
 
 <template>
-  <img :src="imgSrc" :alt="imgSrc" @error="imgError" @load="imgLoaded">
+  <img :src="imgSrc" :alt="imgSrc" @error="imgError" @load="imgLoaded" @loadstart="imgLoadStart" >
 </template>
 
 <script setup lang="ts">
@@ -62,14 +62,16 @@ function imgLoaded() {
   // cancel the timer
   clearTimeout(timeoutId);
 }
+function imgLoadStart() {
+  timeoutId = setTimeout(() => {
+    imgError()
+  }, timeout);
+}
 
 onMounted(() => {
   // console.log(imgSrc) // seems well
   // console.log(props.image) 
   // not tested
-  timeoutId = setTimeout(() => {
-    imgError()
-  }, timeout);
 })
 
 

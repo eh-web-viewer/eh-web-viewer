@@ -168,7 +168,7 @@ func Test_error(t *testing.T) {
 func Test_QueryIndex(t *testing.T) {
 	mycurl.SetClient("proxy")
 
-	r, err := queryIndex(`f_cats=767&f_search=tsukiyo`)
+	r, err := queryIndex(`/f_cats=767&f_search=tsukiyo`)
 	if err != nil {
 		t.Error(err)
 	}
@@ -177,7 +177,7 @@ func Test_QueryIndex(t *testing.T) {
 
 func Test_NullError(t *testing.T) {
 	mycurl.SetClient("proxy")
-	query := `` // why when query homepage, encounter a null ptr error
+	query := `/` // why when query homepage, encounter a null ptr error
 
 	index := &Index{}
 
@@ -198,6 +198,9 @@ func Test_NullError(t *testing.T) {
 	}
 
 	respStr := string(respText)
+
+	fmt.Println(respStr)
+
 	index.Results = (reResults.FindString(respStr))
 	index.NextPage = (reNextPage.FindString(respStr))
 	index.PrevPage = (rePrevPage.FindString(respStr)) // 麻了，golang的re包太麻了，传回去js里面处理吧。
