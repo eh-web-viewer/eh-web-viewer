@@ -12,13 +12,6 @@ import (
 	"github.com/andybalholm/brotli"
 )
 
-const (
-	HOST      = "exhentai.org"
-	URL_ORI   = "https://exhentai.org"
-	S_URL_ORI = "https://s.exhentai.org"
-	S_URL_OW  = "https://s-ex.moonchan.xyz"
-)
-
 var re *regexp.Regexp = regexp.MustCompile(`Domain=[\w\.]*;`)
 
 var client func() *http.Client
@@ -99,6 +92,8 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 		// if in image view, add buttom
 		if strings.HasPrefix(r.URL.Path, `/s/`) {
 			textReplaced = addWaterFallViewButton(textReplaced)
+		} else if strings.HasPrefix(r.URL.Path, `/g/`) {
+			textReplaced = addButtonToEHWV(textReplaced)
 		}
 
 		// process the header
@@ -147,6 +142,36 @@ func Proxy(listen string) {
 	log.Println(err)
 }
 
+func addButtonToEHWV(html string) string {
+	return strings.Replace(html, "<body>", `<body>
+	<div style="
+		height: 60px;
+		width: 100px;
+		text-align: center;
+		/* background-color: violet; */
+		position: fixed;
+		right: 20px; 
+		top: 20px;
+		z-index: 99;
+		display: table-cell;
+		vertical-align: middle;
+		/* float: right; */
+	">
+		<a id="ehwv" href="">
+			<button style="
+				width: 100%;    
+				height: 100%;
+				font-size: x-large;
+			">
+				翻页式
+			</button>
+		</a>
+	</div>
+	<script>
+	document.getElementById("ehwv").href = location.href.replace(location.host, "ehwv.moonchan.xyz");
+	</script>`, 1)
+}
+
 func addWaterFallViewButton(html string) string {
 	return strings.Replace(html, "<body>", `<body>
 	<div style="
@@ -163,12 +188,21 @@ func addWaterFallViewButton(html string) string {
 	  /* float: right; */
 	">
 	  <button id="waterfall" style="
-		width: 100%;    
-		height: 100%;
-		font-size: x-large;
+			width: 100%;    
+			height: 100%;
+			font-size: x-large;
 	  ">
-		下拉式
+			下拉式
 	  </button>
+		<a id="ehwv">
+			<button style="
+				width: 100%;    
+				height: 100%;
+				font-size: x-large;
+			">
+				翻页式
+			</button>
+		</a>
 	</div>
   <script type="text/javascript">
 	async function execWaterfall(){
@@ -205,5 +239,6 @@ func addWaterFallViewButton(html string) string {
 		p.innerHTML = hn;
 	  }
 	document.getElementById("waterfall").addEventListener("click", execWaterfall, false); 
+	document.getElementById("ehwv").href = location.href.replace(location.host, "ehwv.moonchan.xyz");
 	</script>`, 1)
 }

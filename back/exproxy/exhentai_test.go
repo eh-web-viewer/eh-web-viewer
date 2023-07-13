@@ -8,7 +8,8 @@ import (
 	"github.com/eh-web-viewer/eh-web-viewer/mycurl"
 )
 
-func TestUnableToTest(t *testing.T) {
+// UnableToTest
+func TestUsage(t *testing.T) {
 	// initial of my_if
 	my_if.SetPrefix(my_if.PREFIX)
 	defer my_if.Cleanup()
