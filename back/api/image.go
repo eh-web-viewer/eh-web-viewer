@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/antchfx/htmlquery"
 	"github.com/eh-web-viewer/eh-web-viewer/mycurl"
 )
@@ -17,6 +19,12 @@ type Image struct {
 }
 
 func queryImage(query string) (image *Image, err error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			err = fmt.Errorf("%s", e)
+		}
+	}()
 	image = &Image{}
 
 	image.Query = query

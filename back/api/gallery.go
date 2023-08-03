@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/antchfx/htmlquery"
@@ -93,6 +94,12 @@ func queryAllStringList(doc *html.Node, xpath, attr string) (l []string, err err
 }
 
 func queryGalleryPreview(query string) (galleryPreview *GalleryPreview, err error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			err = fmt.Errorf("%s", e)
+		}
+	}()
 	galleryPreview = &GalleryPreview{}
 
 	galleryPreview.Query = query

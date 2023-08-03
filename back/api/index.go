@@ -87,6 +87,12 @@ func parseIndexNodeToSummary(n *html.Node) (gs *GallerySummary) {
 
 // query: should contain '?'
 func queryIndex(query string) (index *Index, err error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			err = fmt.Errorf("%s", e)
+		}
+	}()
 	index = &Index{}
 
 	index.Query = query
