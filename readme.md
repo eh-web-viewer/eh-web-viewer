@@ -68,6 +68,30 @@ ui/ux:
 
 ----
 
+# 自用
+
+## 怎么快速上传部署
+
+后端：
+```sh
+./download.sh  back/back.bin  eh-web-viewer
+```
+
+前端
+
+```sh 
+cd /var/www/ehwv
+nc -l 1324 -v| tar -xzvf - # server
+```
+
+```sh
+tar -czvf - assets index.html vite.svg | /c/bin/Nmap/ncat.exe [localhost] 1324 # local
+```
+
+
+
+----
+
 
 
 ~~curl加上proxy。~~

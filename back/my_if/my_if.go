@@ -52,7 +52,7 @@ func newAddr(prefix string) net.IP {
 	// addr2 := randomInt()
 	// addr1 := randomInt()
 	// nextIP := prefix + covInt2Hex(addr4) + ":" + covInt2Hex(addr3) + ":" + covInt2Hex(addr2) + ":" + covInt2Hex(addr1)
-	nextIP := prefix + covInt2Hex(addr4) + ":" + covInt2Hex(addr3) + ":" + randomHex() + ":" + randomHex()
+	nextIP := prefix + randomHex() + ":" + randomHex() + ":" + covInt2Hex(addr4) + ":" + covInt2Hex(addr3)
 	addr3 += 1
 	addr4 += addr3 / 65536
 	addr3 %= 65536

@@ -12,6 +12,7 @@ params:
 import { 
   ref,
   onMounted,
+onUpdated,
 } from 'vue';
 // not used
 // import { useRoute, useRouter } from 'vue-router'
@@ -72,6 +73,10 @@ onMounted(() => {
   // console.log(imgSrc) // seems well
   // console.log(props.image) 
   // not tested
+})
+
+onUpdated(() => {
+  imgSrc.value = props.image?.image ?? props.src ?? "/favicon.ico"
 })
 
 

@@ -8,7 +8,8 @@ params:
   <div class="gallery-info-continer">
     <div class="gallery-info-cover-container" style="flex: 1; height: 100%; display: flex; align-items: center; justify-content: center;">      
       <!-- <img class="gallery-info-cover" :src="src" :alt="src" loading="lazy" style="max-height: 100%; max-width: 100%; width: auto; height: auto"> -->
-      <image-box :src="src" :image="image"></image-box>
+      <image-box v-if="(typeof image === undefined)" :src="src" ></image-box>
+      <image-box v-else :image="image"></image-box>
     </div>
     <div class="gallery-info-data" style="height: 100%; flex: 2; display: flex; position: relative; flex-direction: column; max-width: 70%; overflow:hidden">      
       <div class="gallery-info-data-title">
