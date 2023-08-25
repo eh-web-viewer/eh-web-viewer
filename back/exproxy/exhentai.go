@@ -47,6 +47,12 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	newUrl.Host = HOST
 	newUrl.Scheme = "https"
 
+	// if ip is not from CN then return 302
+	if country := r.Header.Get("Cf-Ipcountry"); country != "CN" {
+		http.Redirect(w, r, REDIRECT_URL, http.StatusFound)
+		return
+	}
+
 	req, err := http.NewRequest(r.Method, newUrl.String(), r.Body)
 	if err != nil {
 		log.Println(`Error On NewRequest`, err)
