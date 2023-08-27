@@ -53,7 +53,11 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req, err := http.NewRequest(r.Method, newUrl.String(), r.Body)
+	sUrl := newUrl.String()
+	if sUrl == "https://exhentai.org/home" {
+		sUrl = EX_HOME
+	}
+	req, err := http.NewRequest(r.Method, sUrl, r.Body)
 	if err != nil {
 		log.Println(`Error On NewRequest`, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
