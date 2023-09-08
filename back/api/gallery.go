@@ -160,11 +160,18 @@ func queryGalleryPreview(query string) (galleryPreview *GalleryPreview, err erro
 		return
 	}
 
-	galleryPreview.Urls, err = queryAllStringList(doc, "//div[@class='gdtl']//a", "href")
+	// galleryPreview.Urls, err = queryAllStringList(doc, "//div[@class='gdtl']//a", "href")
+	// if err != nil {
+	// 	galleryPreview.Error += err.Error() + "\n"
+	// 	return
+	// }
+	// if len(galleryPreview.Urls) == 0 {
+	galleryPreview.Urls, err = queryAllStringList(doc, "//div[@class='gdtm']//a", "href")
 	if err != nil {
 		galleryPreview.Error += err.Error() + "\n"
 		return
 	}
+	// }
 
 	return
 }

@@ -88,11 +88,30 @@ nc -l 1324 -v| tar -xzvf - # server
 tar -czvf - assets index.html vite.svg | /c/bin/Nmap/ncat.exe [localhost] 1324 # local
 ```
 
+## 更新记录
 
+# 今まで
+EhwvGalleryInfo
+是啥
+EhwvImageBox.vue
+是啥
+都不记得了
 
-----
+不想改了。下次从view这边改。
+# 08/30
 
+终于想到可以做个跟新纪录以防忘记怎么做了。
 
+现在是啥，好像是改版面的问题，现在好麻烦。
+目标是：
+- [ ] gallery页面能原地加载下一页
+- [ ] index页面的bug修复。并不是跟着router走而是 按钮->过程->更新页面和url。
+- [ ] image似乎有点毛病。放在之后说吧
+- [ ] trival or misc
+  - [ ] 标签可点击，样式
+  - [ ] index的筛选
+
+# ----
 
 ~~curl加上proxy。~~
 ~~去用fiber里的~~
