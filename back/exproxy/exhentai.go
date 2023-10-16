@@ -96,9 +96,10 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		textReplaced := strings.Replace(string(text), URL_ORI, "", -1)
+		textReplaced := string(text)
+		textReplaced = strings.Replace(textReplaced, URL_ORI, "", -1)
 		textReplaced = strings.Replace(textReplaced, S_URL_ORI, S_URL_OW, -1)
+		textReplaced = strings.Replace(textReplaced, `</head>`, `<link rel="stylesheet" type="text/css" href="https://moonchan.xyz/x.css"></head>`, -1)
 		// if in image view, add buttom
 		if strings.HasPrefix(r.URL.Path, `/s/`) {
 			textReplaced = addWaterFallViewButton(textReplaced)
